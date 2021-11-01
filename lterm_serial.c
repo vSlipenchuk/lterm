@@ -34,9 +34,10 @@ while(1) {
  if (l<0) { msleep(10); continue;}; //break;
  if (l==0) break; // EOF?
  buf[l]=0;
-  char *c=trim(buf); // trim it
- printf("%s\n",c);
- //prt_write(com,c,strlen(c)); prt_write(com,"\r\n",2); // write to com
+  //  char *c=trim(buf); // trim it
+  //printf("%s\n",c);   prt_write(com,c,strlen(c)); // prt_write(com,"\r\n",2); // write to com
+  //  prt_write(com,buf,l); // as is
+  write(1,buf,l);
  }
 fprintf(stderr,"[EOF on comport ret=%d com=%p]\n",l,com);
 aborted=1; // ZU! - all will stop

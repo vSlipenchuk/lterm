@@ -1,5 +1,10 @@
 #include "lterm.h"
+#include "magma.h"
 
+void crypt(unsigned char *in,unsigned char *out,int len) { // my crypt
+unsigned char ctr[sizeof(init_vect_ctr_string)]; memcpy(ctr,init_vect_ctr_string,sizeof(init_vect_ctr_string));
+CTR_Crypt(ctr, in, out,  cypher_key, len);
+}
 
 /// new one
 #define MAX_UDP 1024 // buffer send-recv max
@@ -36,6 +41,14 @@ while(1) {
      }
   if (len<0) break;
   buf[len]=0; // teroterm
+  if (magma_ready) { // decipher
+     char obuf[MAX_UDP];
+        hex_dump("recv:",buf,len);
+        unsigned char ctr[sizeof(init_vect_ctr_string)]; memcpy(ctr,init_vect_ctr_string,sizeof(init_vect_ctr_string));
+        CTR_Crypt(ctr, buf, obuf, cypher_key, len );
+        memcpy(buf,obuf,len); // copy here
+      //  hex_dump("dec:",buf,len);
+     }
   if (len>0) printf("%s\n",buf);
   }
 return 0;
@@ -79,7 +92,16 @@ while(1) {
   //fgets(buf,sizeof(buf),stdin);
   char *buf = readline(0);
   char *c = trim(buf); //strcat(c,"\r\n");
-  int l = sendto(sock,c,strlen(c),0,(void*)&udp_target_sa,sizeof(udp_target_sa)); // send without '\r\n'
+  int len = strlen(c);
+  if (magma_ready) {
+     char obuf[MAX_UDP];
+     if (len%8) len+=(8-len%8); // 8byte block size
+        unsigned char ctv[sizeof(init_vect_ctr_string)]; memcpy(ctv,init_vect_ctr_string,sizeof(init_vect_ctr_string));
+     CTR_Crypt(ctv, c, obuf, cypher_key, len );
+     memcpy(buf,obuf,len); c=buf;
+    // hex_dump("send_enc",c,len);
+     }
+  int l = sendto(sock,c,len,0,(void*)&udp_target_sa,sizeof(udp_target_sa)); // send without '\r\n'
   add_history(buf); // add to history buffer
   free(buf);
   //printf("send res=%d on sock %d\n",l,sock);
