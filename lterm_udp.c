@@ -1,7 +1,7 @@
 #include "lterm.h"
 #include "magma.h"
 
-void crypt(unsigned char *in,unsigned char *out,int len) { // my crypt
+void magma_crypt(unsigned char *in,unsigned char *out,int len) { // my crypt
 unsigned char ctr[sizeof(init_vect_ctr_string)]; memcpy(ctr,init_vect_ctr_string,sizeof(init_vect_ctr_string));
 CTR_Crypt(ctr, in, out,  cypher_key, len);
 }
