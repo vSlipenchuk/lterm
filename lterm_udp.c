@@ -94,17 +94,20 @@ while(1) {
   char *buf = readline(0);
   char *c = trim(buf); //strcat(c,"\r\n");
   int len = strlen(c);
+  add_history(buf); // add to history buffer
   if (magma_ready) {
-     char obuf[MAX_UDP];
-     if (len%8) len+=(8-len%8); // 8byte block size
+     char obuf[MAX_UDP]; int pad = 0;
+     pad = len%8; if (pad) pad=8-pad;
+     memset(c+len,0,pad);len+=pad;
      //    unsigned char ctv[sizeof(init_vect_ctr_string)]; memcpy(ctv,init_vect_ctr_string,sizeof(init_vect_ctr_string));
      //CTR_Crypt(ctv, c, obuf, cypher_key, len );
+     hex_dump("raw",c,len);
      magma_crypt(c,obuf,len);
      memcpy(buf,obuf,len); c=buf;
      hex_dump("send_enc",c,len);
      }
   int l = sendto(sock,c,len,0,(void*)&udp_target_sa,sizeof(udp_target_sa)); // send without '\r\n'
-  add_history(buf); // add to history buffer
+
   free(buf);
   //printf("send res=%d on sock %d\n",l,sock);
   if (l<0) { perror("[sendto error]"); break; }

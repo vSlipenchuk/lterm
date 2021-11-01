@@ -15,7 +15,7 @@ void GOST_Magma_Decrypt(const uint8_t *blk, uint8_t *out_blk);
 
 #define BLCK_SIZE 8
 
-extern  unsigned char init_vect_ctr_string[BLCK_SIZE / 2]; // init vector string
+extern  unsigned char init_vect_ctr_string[BLCK_SIZE]; // init vector string
 
 void ECB_Encrypt(uint8_t *in_buf, uint8_t *out_buf, uint8_t *key, uint64_t size);
 
