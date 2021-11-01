@@ -44,8 +44,9 @@ while(1) {
   if (magma_ready) { // decipher
      char obuf[MAX_UDP];
         hex_dump("recv:",buf,len);
-        unsigned char ctr[sizeof(init_vect_ctr_string)]; memcpy(ctr,init_vect_ctr_string,sizeof(init_vect_ctr_string));
-        CTR_Crypt(ctr, buf, obuf, cypher_key, len );
+        //unsigned char ctr[sizeof(init_vect_ctr_string)]; memcpy(ctr,init_vect_ctr_string,sizeof(init_vect_ctr_string));
+        //CTR_Crypt(ctr, buf, obuf, cypher_key, len );
+        magma_crypt(buf,obuf,len);
         memcpy(buf,obuf,len); // copy here
       //  hex_dump("dec:",buf,len);
      }
@@ -96,10 +97,11 @@ while(1) {
   if (magma_ready) {
      char obuf[MAX_UDP];
      if (len%8) len+=(8-len%8); // 8byte block size
-        unsigned char ctv[sizeof(init_vect_ctr_string)]; memcpy(ctv,init_vect_ctr_string,sizeof(init_vect_ctr_string));
-     CTR_Crypt(ctv, c, obuf, cypher_key, len );
+     //    unsigned char ctv[sizeof(init_vect_ctr_string)]; memcpy(ctv,init_vect_ctr_string,sizeof(init_vect_ctr_string));
+     //CTR_Crypt(ctv, c, obuf, cypher_key, len );
+     magma_crypt(c,obuf,len);
      memcpy(buf,obuf,len); c=buf;
-    // hex_dump("send_enc",c,len);
+     hex_dump("send_enc",c,len);
      }
   int l = sendto(sock,c,len,0,(void*)&udp_target_sa,sizeof(udp_target_sa)); // send without '\r\n'
   add_history(buf); // add to history buffer
