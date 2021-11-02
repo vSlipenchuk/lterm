@@ -13,10 +13,12 @@ return 1;
 
 unsigned char cypher_key[32]; // fffefdfc fbfaf9f8 f7f6f5f4 f3f2f1f0 00112233 44556677 8899aabb ccddeeff  // if have cypher
 int magma_ready = 0;
-unsigned char init_vect_ctr_string[BLCK_SIZE] = { 0x78, 0x56, 0x34, 0x12, 0,0,0 }; // initial vecor - must reset every send/recv data
+unsigned char init_vect_ctr_string[BLCK_SIZE/2] = { 0x78, 0x56, 0x34, 0x12}; // initial vecor - must reset every send/recv data
 
-
-
+// start listen local 1024 udp port with test key
+// ./.lterm udp::1024 "fffefdfc fbfaf9f8 f7f6f5f4 f3f2f1f0 00112233 44556677 8899aabb ccddeeff "
+// connect to local 1024 with test key
+// ./.lterm udp:localhost:1024 "fffefdfc fbfaf9f8 f7f6f5f4 f3f2f1f0 00112233 44556677 8899aabb ccddeeff "
 
 int main(int npar,char **par)
 {

@@ -18,7 +18,7 @@
 #include <readline/history.h>
 #include "magma.h"
 
-#define szVersion "0.12"
+#define szVersion "0.12b"
 
 // 0.1  - lterm -> serial & udp
 // 0.12 - lterm - added magma cypher (second param - optional)
@@ -29,6 +29,9 @@ extern int magma_ready; // if we need cyphering/decyphering with magma
 int lterm_udp_main(char *host) ;  // host:port
 int lterm_serial_main(char *dev); // /dev/tty*:speed
 
-extern unsigned char cypher_key[32];
+extern unsigned char init_vect_ctr_string[BLCK_SIZE/2];  // init vector
+extern unsigned char cypher_key[32]; // key for magma cypher
+void magma_crypt( char *in, char *out,int len) ; // wrapper over CTR_Crypt with  custom init_vect & key
+
 
 #endif // LTERM_H

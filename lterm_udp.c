@@ -1,9 +1,11 @@
 #include "lterm.h"
 #include "magma.h"
 
-void magma_crypt(unsigned char *in,unsigned char *out,int len) { // my crypt
-unsigned char ctr[sizeof(init_vect_ctr_string)]; memcpy(ctr,init_vect_ctr_string,sizeof(init_vect_ctr_string));
-CTR_Crypt(ctr, in, out,  cypher_key, len);
+void magma_crypt( char *in, char *out,int len) { // my crypt
+unsigned char ctr[sizeof(init_vect_ctr_string)*2];
+memset(ctr,0,4); // first 4 bytes -> counter for gamma
+memcpy(ctr+4,init_vect_ctr_string,sizeof(init_vect_ctr_string)); // last 4 bytes -> initial vector for gamma
+CTR_Crypt(ctr, (void*)in,(void*) out,  cypher_key, len);
 }
 
 /// new one
@@ -19,6 +21,7 @@ if (host) sprintf(host,"%d.%d.%d.%d",ip[0],ip[1],ip[2],ip[3]);
 return host;
 }
 
+int hex_dump(char *msg, char *ss,int len) ;
 
 struct sockaddr_in udp_target_sa; // must be reset on a new packets
 //int sa_len = sizeof(udp_target_sa);
