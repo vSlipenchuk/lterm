@@ -7,7 +7,7 @@
 
 int prn_help() {
 fprintf(stderr,"lterm version: %s, build: "__DATE__"\n",szVersion);
-fprintf(stderr,"usage: </dev/tty*:speed|udp:host:port> <key32byte>\n");
+fprintf(stderr,"usage: </dev/tty*:speed|udp:host:port|tcp:host:port> <key32byte>\n");
 return 1;
 }
 
@@ -16,9 +16,15 @@ int magma_ready = 0;
 unsigned char init_vect_ctr_string[BLCK_SIZE/2] = { 0x78, 0x56, 0x34, 0x12}; // initial vecor - must reset every send/recv data
 
 // start listen local 1024 udp port with test key
-// ./.lterm udp::1024 "fffefdfc fbfaf9f8 f7f6f5f4 f3f2f1f0 00112233 44556677 8899aabb ccddeeff "
+// ./lterm udp::1024 "fffefdfc fbfaf9f8 f7f6f5f4 f3f2f1f0 00112233 44556677 8899aabb ccddeeff "
 // connect to local 1024 with test key
-// ./.lterm udp:localhost:1024 "fffefdfc fbfaf9f8 f7f6f5f4 f3f2f1f0 00112233 44556677 8899aabb ccddeeff "
+// ./lterm udp:localhost:1024 "fffefdfc fbfaf9f8 f7f6f5f4 f3f2f1f0 00112233 44556677 8899aabb ccddeeff "
+
+// test tcp
+// ./lterm tcp::1024 "fffefdfc fbfaf9f8 f7f6f5f4 f3f2f1f0 00112233 44556677 8899aabb ccddeeff "
+// connect to local 1024 with test key
+// ./lterm tcp:localhost:1024 "fffefdfc fbfaf9f8 f7f6f5f4 f3f2f1f0 00112233 44556677 8899aabb ccddeeff "
+
 
 int main(int npar,char **par)
 {
@@ -37,6 +43,7 @@ int main(int npar,char **par)
        }
     char *cmd = par[1];
     if (lcmp(&cmd,"udp:")) return lterm_udp_main(cmd);
+    else if (lcmp(&cmd,"tcp:")) return lterm_tcp_main(cmd);
     else if (strncmp(cmd,"/dev/tty",8)==0) {
         return lterm_serial_main(cmd);
        }
